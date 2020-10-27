@@ -1,13 +1,13 @@
-package com.rbugarin.a1erproyecto
+package com.rbugarin.a1erproyecto.adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.rbugarin.a1erproyecto.Animal
+import com.rbugarin.a1erproyecto.R
 
 
 class adaptadorAnimles(private val animals: List<Animal>) : RecyclerView.Adapter<adaptadorAnimles.AnimalHolder>() {

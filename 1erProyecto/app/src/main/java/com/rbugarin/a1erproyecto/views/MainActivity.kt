@@ -1,28 +1,38 @@
-package com.rbugarin.a1erproyecto
+package com.rbugarin.a1erproyecto.views
 
 import android.app.AlertDialog
 import android.content.DialogInterface
-import android.media.MediaCodec
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.activity.viewModels
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.rbugarin.a1erproyecto.Animal
+import com.rbugarin.a1erproyecto.R
+import com.rbugarin.a1erproyecto.adapters.RegistroAdapter
+import com.rbugarin.a1erproyecto.adapters.adaptadorAnimles
+import com.rbugarin.a1erproyecto.models.entities.Registro
+import com.rbugarin.a1erproyecto.models.roomdb.RegistroDB
+import com.rbugarin.a1erproyecto.viewmodels.ActivityAddRegistroViewModel
+import com.rbugarin.a1erproyecto.viewmodels.MainActivityViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.recycler_registros.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var rbAdoptar : RadioButton
-    private lateinit var rbComprar : RadioButton
-    private lateinit var rbInternar : RadioButton
-
+    private val activityAddRegistroViewModel: ActivityAddRegistroViewModel by viewModels()
     private lateinit var checkGato : CheckBox
     private lateinit var checkHamster : CheckBox
     private lateinit var checkConejo : CheckBox
     private lateinit var checkPerro : CheckBox
     private lateinit var checkLoro : CheckBox
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +40,12 @@ class MainActivity : AppCompatActivity() {
 
         val fabconf = findViewById<FloatingActionButton>(R.id.fabConfirmación)
         fabconf.setOnClickListener(fabClick)
+
+        val fabreg = findViewById<FloatingActionButton>(R.id.fabRegistros)
+        fabreg.setOnClickListener {
+            val intent = Intent(this,ActivityAddRegistro::class.java)
+            startActivity(intent)
+        }
 
         checkGato = findViewById(R.id.cbGato)
         checkHamster = findViewById(R.id.cbHamster)
@@ -130,7 +146,31 @@ class MainActivity : AppCompatActivity() {
             .create()
 
         conf.show()
+
+        val name = findViewById<TextView>(R.id.etNombre).text.toString()
+        val lastname = findViewById<TextView>(R.id.etApellido).text.toString()
+        val email = findViewById<TextView>(R.id.etCorreoElectronico).text.toString()
+        val registro = Registro(
+            id = null,
+            nombre = name,
+            apellido = lastname,
+            correoelectronico = email,
+            accion = acc,
+            animal = ani
+        )
+
+        activityAddRegistroViewModel.insertRegistro(registro)
+
     }
+
+    /*activityAddRegistroViewModel.notifyInsertRegistro().observe(this, { succesful ->
+        if (succesful) {
+            Toast.makeText(this, "Guardado exitoso", Toast.LENGTH_LONG).show()
+            finish()
+        } else {
+            Toast.makeText(this, "No se pudo completar el registro", Toast.LENGTH_LONG).show()
+        }
+    })*/
 
     fun createAnimals(): List<Animal> {
         val animals = mutableListOf<Animal>()
@@ -174,7 +214,6 @@ class MainActivity : AppCompatActivity() {
                 "Ave trepadora de 30 a 40 cm de longitud, con el plumaje de colores muy vistosos y variados, y el pico fuerte, grueso y curvo; es capaz de imitar la voz humana."
             )
         )
-
         return animals
     }
 }
